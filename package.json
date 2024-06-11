@@ -10,6 +10,7 @@
     "test:unit": "vitest"
   },
   "dependencies": {
+    "auth0-js": "^9.26.1",
     "axios": "^1.7.2",
     "dayjs": "^1.11.11",
     "dompurify": "^3.1.5",
@@ -21,7 +22,6 @@
     "pdfjs": "^2.5.3",
     "pinia": "^2.1.7",
     "storyboard": "^3.3.2",
-    "vest": "^5.2.12",
     "vue": "^3.4.21",
     "vue-cookies": "^1.8.4",
     "vue-router": "^4.3.0"
