@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+      "target": "esnext",
+      "module": "ESNext",
+      "moduleResolution": "Bundler",
+  
+      "outDir": "lib",
+      "sourceMap": true,
+  
+      "newLine": "LF",
+      "forceConsistentCasingInFileNames": true,
+      "noFallthroughCasesInSwitch": true,
+      "noImplicitAny": true,
+      "noImplicitThis": true,
+      "strictBindCallApply": true,
+      "strictNullChecks": true,
+      "strictPropertyInitialization": true,
+
+      "typeRoots": [
+        "node_modules/@types",
+      ]
+    },
+    "include": [
+      "./**/*.ts"
+    ],
+    "exclude": [
+      "node_modules"
+    ]
+  }
