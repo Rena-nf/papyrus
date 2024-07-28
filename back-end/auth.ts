@@ -4,11 +4,11 @@ import { Strategy } from "passport-local"
 import { UserModel } from "./user"
 
 const LocalStrategy: Strategy = new Strategy(UserModel.authenticate())
-const Passport: pass.PassportStatic = pass
+const PassportAuth: pass.PassportStatic = pass
 
 // Username and password login
-Passport.use(LocalStrategy)
-Passport.serializeUser(UserModel.serializeUser())
-Passport.deserializeUser(UserModel.deserializeUser())
+PassportAuth.use(LocalStrategy)
+PassportAuth.serializeUser(UserModel.serializeUser())
+PassportAuth.deserializeUser(UserModel.deserializeUser())
 
-export { Passport }
+export { PassportAuth }

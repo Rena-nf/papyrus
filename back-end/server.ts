@@ -2,12 +2,12 @@ import bodyparser from "body-parser"
 import history from "connect-history-api-fallback"
 import * as cors from "cors"
 import * as exp from "express"
-import { Request, Response, NextFunction } from "express"
 import session from "express-session"
 import {rateLimit, RateLimitRequestHandler} from "express-rate-limit"
 import helmet from "helmet"
 
-import { Passport } from "./auth"
+import { PassportAuth } from "./auth"
+import RouteControl from "./route"
 
 // Mongo related import
 import MongoSession from "connect-mongo"
@@ -70,8 +70,8 @@ Controller.use(cors())
 Controller.use(exp.urlencoded({extended: true}))
 Controller.use(Helmet)
 Controller.use(history)
-Controller.use(Passport.initialize())
-Controller.use(Passport.session())
+Controller.use(PassportAuth.initialize())
+Controller.use(PassportAuth.session())
 Controller.use(RateLimiter)
 
 // Mongoose & connect-mongo stuff
@@ -92,15 +92,5 @@ Controller.use(
     })
 )
 
-// Routing
-const checkIfLogged = (req: Request, res: Response, next: NextFunction) => {
-    if (req.isAuthenticated()) {
-        next()
-    } else {
-        res.status(401).send("User not authorized / Not logged in")
-    }
-}
-
-Controller.get("/", checkIfLogged, () => {
-     
-})
+// Adds route Controller
+Controller.use("/", RouteControl)
