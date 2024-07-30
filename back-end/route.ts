@@ -1,29 +1,13 @@
-import { NextFunction, Router, Request, Response, } from "express"
-import path from "path"
+import { Request, Response, Router } from "express"
 
-import { PassportAuth } from "./auth"
-
-const RouteControl: Router = Router()
-
-const checkIfLogged = (req: Request, res: Response, next: NextFunction) => {
-    if (req.isAuthenticated()) {
-        next()
-    } else {
-        res.status(401).send("User not authorized / Not logged in")
-    }
-}
+const RouteControl = Router()
 
 RouteControl.get("/", (req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, '../public', './index.html'))
+    res.send({
+        "success": true,
+        "message": "connected",
+        "data": {}
+    })
 })
 
-RouteControl.post("/login", PassportAuth.authenticate('local', {
-    failureRedirect: "/login",
-    failureMessage: true,
-    successRedirect: "/",
-    successMessage: true
-}))
-
-RouteControl.post("/register")
-
-export default RouteControl
+export {RouteControl}

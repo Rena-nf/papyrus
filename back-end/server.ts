@@ -1,19 +1,14 @@
 import bodyparser from "body-parser"
 import history from "connect-history-api-fallback"
-import * as cors from "cors"
-import * as exp from "express"
-import session from "express-session"
+import exp from "express"
 import {rateLimit, RateLimitRequestHandler} from "express-rate-limit"
 import helmet from "helmet"
 
-import { PassportAuth } from "./auth"
-import RouteControl from "./route"
-
-// Mongo related import
-import MongoSession from "connect-mongo"
-import mongoose from "mongoose"
+import { RouteControl } from "./route"
 
 const Controller: exp.Application = exp()
+const Port: number = 5000
+const staticFileMiddleware = exp.static("./dist")
 
 const RateLimiter: RateLimitRequestHandler = rateLimit({
     windowMs: 30 * 60 * 100,
@@ -66,31 +61,24 @@ Controller.use(BodyParserJson)
 Controller.use(BodyParserRaw)
 Controller.use(BodyParserText)
 Controller.use(BodyParserUrl)
-Controller.use(cors())
 Controller.use(exp.urlencoded({extended: true}))
 Controller.use(Helmet)
-Controller.use(history)
-Controller.use(PassportAuth.initialize())
-Controller.use(PassportAuth.session())
+Controller.use(staticFileMiddleware)
+Controller.use(history({
+    rewrites: [
+        {
+          from: /^\/api\/.*$/,
+          to: function(context): string {
+              return context.parsedUrl.path as string
+          }
+        }
+    ]
+}))
+Controller.use(staticFileMiddleware)
 Controller.use(RateLimiter)
 
-// Mongoose & connect-mongo stuff
-const MongoUri: string | undefined = process.env.MONGO_URL as string
-const db_inst = mongoose.connect(MongoUri).then(m => m.connection.getClient())
+Controller.use("/api", RouteControl)
 
-Controller.use(
-    session({
-        secret: process.env.SESSION_PASS as string | "",
-        resave: true,
-        saveUninitialized: true,
-        store: MongoSession.create({
-            clientPromise: db_inst,
-            ttl: 30 * 24 * 60 * 60, // 30 days expiration date
-            autoRemove: "interval",
-            autoRemoveInterval: 60 // 60 minutes removal interval 
-        })
-    })
-)
-
-// Adds route Controller
-Controller.use("/", RouteControl)
+Controller.listen(Port, "0.0.0.0", () => {
+    console.log(`Running on port ${Port}`)
+})
